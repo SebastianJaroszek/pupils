@@ -31,25 +31,18 @@ public class InMemoryPupilRepository implements PupilRepository {
 
     @Override
     public Optional<Pupil> findById(int id) {
-
-        /*allPupils.stream()
-                .filter(pupil -> pupil.getId() == id);*/
-        Optional<Pupil> optional = Optional.empty();
-        for (Pupil pupil : allPupils){
-            if (pupil.getId() == id){
-                optional = Optional.of(pupil);
-            }
-        }
-        return optional;
+        return allPupils.stream()
+                .filter(pupil -> pupil.getId() == id)
+                .findFirst();
     }
 
     @Override
     public void deleteById(int id) {
-        Optional<Pupil> pupilToDelete = findById(id);
+        /*Optional<Pupil> pupilToDelete = findById(id);
         if (pupilToDelete.isPresent()) {
             allPupils.remove(pupilToDelete.get());
         } else {
-            //TODO wygeneruj komunikat w HTML
-        }
+        }*/
+        findById(id).ifPresent(pupil -> allPupils.remove(pupil));
     }
 }
