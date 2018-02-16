@@ -28,9 +28,9 @@ public class PupilsServlet extends HttpServlet {
         String queryString = req.getQueryString();
         //String suffix = requestUri.replaceFirst(req.getContextPath() + "/", "");
         PrintWriter out = resp.getWriter();
-        if (requestUri.endsWith("/pupils") && classLetter == null && classNumber == null){
+        if (requestUri.endsWith("/pupils") && classLetter == null && classNumber == null) {
             findAll(resp);
-        } else if (classLetter != null && classNumber != null){
+        } else if (classLetter != null && classNumber != null) {
             findByClassLetterAndClassNumber(classLetter, classNumber, resp);
         } else {
             int lastSlash = requestUri.lastIndexOf("/");
@@ -47,11 +47,7 @@ public class PupilsServlet extends HttpServlet {
 
     }
 
-    private void findByClassLetterAndClassNumber(String classLetter,
-                                                 String classNumber, HttpServletResponse resp) throws IOException {
-        char letter = classLetter.charAt(0);
-        Integer number = Integer.valueOf(classNumber);
-        List<Pupil> pupils = pupilRepository.findByClassLetterAndClassNumber(letter, number);
+    private void createResponse(HttpServletResponse resp, List<Pupil> pupils) throws IOException {
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
         Gson gson = new Gson();
@@ -59,13 +55,17 @@ public class PupilsServlet extends HttpServlet {
         out.print(gson.toJson(pupils));
     }
 
+    private void findByClassLetterAndClassNumber(String classLetter,
+                                                 String classNumber, HttpServletResponse resp) throws IOException {
+        char letter = classLetter.charAt(0);
+        Integer number = Integer.valueOf(classNumber);
+        List<Pupil> pupils = pupilRepository.findByClassLetterAndClassNumber(letter, number);
+        createResponse(resp, pupils);
+    }
+
     private void findAll(HttpServletResponse resp) throws IOException {
         List<Pupil> pupils = pupilRepository.findAll();
-        resp.setContentType("application/json");
-        resp.setCharacterEncoding("UTF-8");
-        Gson gson = new Gson();
-        PrintWriter out = resp.getWriter();
-        out.print(gson.toJson(pupils));
+        createResponse(resp, pupils);
     }
 
     @Override
