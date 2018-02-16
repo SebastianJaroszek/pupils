@@ -10,7 +10,7 @@ public class Pupil {
     private int id;
     private String name;
     private int classNumber;
-    private String classLetter;
+    private char classLetter;
     private int absenceCount;
 
 }
