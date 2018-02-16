@@ -14,11 +14,11 @@ public class PupilRepositoryTest {
 
 
         Optional<Pupil> pupil = pupilRepository.findById(3);
-        /*if (pupil.isPresent()) {
-            System.out.println("\nFounded pupil by id: \n" + pupil.get());
-        }*/
-
         pupil.ifPresent(p -> System.out.println("\nFounded pupil by id: \n" + p));
+
+        pupilRepository.deleteById(1);
+        System.out.println("\nAll pupils after removing 1:");
+        pupilRepository.findAll().forEach(p -> System.out.println(p));
 
     }
 

@@ -38,11 +38,6 @@ public class InMemoryPupilRepository implements PupilRepository {
 
     @Override
     public void deleteById(int id) {
-        /*Optional<Pupil> pupilToDelete = findById(id);
-        if (pupilToDelete.isPresent()) {
-            allPupils.remove(pupilToDelete.get());
-        } else {
-        }*/
         findById(id).ifPresent(pupil -> allPupils.remove(pupil));
     }
 }
