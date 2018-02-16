@@ -20,19 +20,43 @@ public class PupilsServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        /*resp.setContentType("text/html");
-        resp.setCharacterEncoding("utf-8");*/
         String requestUri = req.getRequestURI();
+
+        String classLetter = req.getParameter("classLetter");
+        String classNumber = req.getParameter("classNumber");
+
         String queryString = req.getQueryString();
         //String suffix = requestUri.replaceFirst(req.getContextPath() + "/", "");
         PrintWriter out = resp.getWriter();
-        if (requestUri.endsWith("/pupils")){
+        if (requestUri.endsWith("/pupils") && classLetter == null && classNumber == null){
             findAll(resp);
+        } else if (classLetter != null && classNumber != null){
+            findByClassLetterAndClassNumber(classLetter, classNumber, resp);
+        } else {
+            int lastSlash = requestUri.lastIndexOf("/");
+            String id = requestUri.substring(lastSlash + 1);
+            findById(id, resp);
         }
         //TODO rozróżnić przypadki przez URI:
         // /pupils - wykorzystać findAll i zrobić z tego HTML
         // /pupils/id - wyciągnąć id i wykorzystać findById (jak nie ma to komunikat "nie znaleziono")
         // /pupils?classNumber=3&classLetter=B - wykorzystać findByClassNumberAncClassLetter
+    }
+
+    private void findById(String id, HttpServletResponse resp) {
+
+    }
+
+    private void findByClassLetterAndClassNumber(String classLetter,
+                                                 String classNumber, HttpServletResponse resp) throws IOException {
+        char letter = classLetter.charAt(0);
+        Integer number = Integer.valueOf(classNumber);
+        List<Pupil> pupils = pupilRepository.findByClassLetterAndClassNumber(letter, number);
+        resp.setContentType("application/json");
+        resp.setCharacterEncoding("UTF-8");
+        Gson gson = new Gson();
+        PrintWriter out = resp.getWriter();
+        out.print(gson.toJson(pupils));
     }
 
     private void findAll(HttpServletResponse resp) throws IOException {
